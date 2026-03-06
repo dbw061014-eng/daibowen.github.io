@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Community - Match Information</title>
+    <!-- Import Bootstrap CSS and icon library -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* Define custom color variables for the entire project */
+        :root {
+            --primary: #1E293B;
+            --lol: #7C3AED;
+            --hok: #10B981;
+            --match: #F59E0B;
+            --dota2: #E64A19;
+            --light-bg: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --card-bg: #ffffff;
+        }
+        /* Base body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--primary);
+            transition: background-color 0.3s, color 0.3s;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        /* Dark mode base styles - override core colors and update card background variable */
+        body.dark {
+            background-color: var(--primary);
+            color: var(--light-bg);
+            --card-bg: #2A374B;
+        }
+        /* Navigation bar styles */
+        .navbar {
+            background-color: var(--primary) !important;
+            padding: 0.8rem 0;
+        }
+        /* Navigation button styles (for dark mode toggle etc.) */
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+        }
+        /* Mobile bottom navigation bar (fixed at bottom) */
+        .mobile-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+        }
+        /* Mobile navigation item styles */
+        .mobile-nav-item {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-bg);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        .mobile-nav-item.active { color: var(--match); }
+        /* Card component base styles */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background-color: var(--card-bg);
+            margin-bottom: 1.5rem;
+        }
+        /* Button base styles */
+        .btn {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 500;
+            border: none;
+        }
+        /* Game-specific button styles */
+        .btn-match { background-color: var(--match); color: white; }
+        .btn-lol { background-color: var(--lol); color: white; }
+        .btn-hok { background-color: var(--hok); color: white; }
+        .btn-dota2 { background-color: var(--dota2); color: white; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        /* Dark mode adjustment for primary button background */
+        body.dark .btn-primary { background-color: #334155; }
+        /* Match banner section styles */
+        .match-banner {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, var(--match), #FBBF24);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 2rem;
+        }
+        /* Timeline container for match events */
+        .timeline {
+            position: relative;
+            margin-left: 1rem;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 4px;
+            background-color: var(--match);
+            border-radius: 2px;
+        }
+        /* Individual timeline item (match entry) */
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.5rem; top: 1.5rem;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background-color: var(--match);
+            border: 4px solid var(--light-bg);
+            z-index: 1;
+        }
+        /* Dark mode fix for timeline dot border color */
+        body.dark .timeline-item::before { border-color: var(--primary); }
+        /* Match status tag styles */
+        .match-tag { padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; font-weight: 500; }
+        .tag-live { background-color: rgba(239,68,68,0.2); color: #EF4444; }
+        .tag-hok { background-color: rgba(16,185,129,0.2); color: var(--hok); }
+        .tag-dota2 { background-color: rgba(230,74,25,0.2); color: var(--dota2); }
+        /* Responsive display control (desktop/mobile) */
+        .desktop-only { display: block; }
+        .mobile-only { display: none; }
+        /* Mobile responsive styles (<768px) */
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: block; }
+            .timeline { margin-left: 0; padding-left: 1.5rem; }
+            .timeline-item::before { left: -1.8rem; }
+        }
+        /* Dark mode secondary text color adjustment */
+        body.dark .text-secondary { color: #94A3B8 !important; }
+    </style>
+</head>
+<body>
+    <!-- Desktop navigation bar -->
+    <nav class="navbar navbar-dark desktop-only">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="index.html">MOBA Nexus</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="strategy.html" class="text-white text-decoration-none">Strategy</a>
+                <a href="matches.html" class="text-white text-decoration-none fw-bold">Matches</a>
+                <a href="teamup.html" class="text-white text-decoration-none">Team Up</a>
+                <div class="nav-btn text-white mode-toggle"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile navigation bar (top) -->
+    <nav class="navbar navbar-dark mobile-only">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold" href="index.html">MOBA Nexus</a>
+            <div class="nav-btn text-white mode-toggle"><i class="bi bi-moon fs-5"></i></div>
+        </div>
+    </nav>
+
+    <!-- Main content wrapper -->
+    <div class="content-wrap container mt-4">
+        <h3 class="fw-bold mb-3">Match Information Center</h3>
+        <p class="text-secondary mb-4">LPL | KPL | DOTA2 International | Schedules & Analysis</p>
+
+        <!-- Match banner section -->
+        <div class="match-banner">
+            <div class="text-center">
+                <h2 class="fw-bold">2026 LIVE MATCHES</h2>
+                <p>Real-time Reports | Professional Analysis</p>
+            </div>
+        </div>
+
+        <!-- Game filter buttons -->
+        <div class="row g-2 mb-4">
+            <div class="col-6 col-md-3"><button class="btn btn-match w-100">All</button></div>
+            <div class="col-6 col-md-3"><button class="btn btn-lol w-100">LPL</button></div>
+            <div class="col-6 col-md-3"><button class="btn btn-hok w-100">KPL</button></div>
+            <div class="col-6 col-md-3"><button class="btn btn-dota2 w-100">DOTA2</button></div>
+        </div>
+
+        <!-- Match timeline section -->
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="h6 fw-bold m-0">TES vs WBG - LPL Spring</h5>
+                    <span class="match-tag tag-live">LIVE</span>
+                </div>
+                <p class="text-secondary small">Time: Mar 6, 2026 19:00 | BO5</p>
+                <button class="btn btn-sm btn-lol mt-2">Watch Live</button>
+            </div>
+
+            <div class="timeline-item">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="h6 fw-bold m-0">AG vs eStar - KPL Spring</h5>
+                    <span class="match-tag tag-hok">UPCOMING</span>
+                </div>
+                <p class="text-secondary small">Time: Mar 7, 2026 20:00 | BO5</p>
+                <button class="btn btn-sm btn-hok mt-2">Reminder</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile bottom navigation -->
+    <div class="mobile-footer mobile-only">
+        <a href="index.html" class="mobile-nav-item"><i class="bi bi-house fs-5"></i></a>
+        <a href="strategy.html" class="mobile-nav-item"><i class="bi bi-book-half fs-5"></i></a>
+        <a href="matches.html" class="mobile-nav-item active"><i class="bi bi-trophy fs-5"></i></a>
+        <a href="teamup.html" class="mobile-nav-item"><i class="bi bi-people fs-5"></i></a>
+    </div>
+
+    <!-- Import Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get all dark mode toggle buttons (desktop + mobile)
+        const modeToggles = document.querySelectorAll('.mode-toggle');
+        const body = document.body;
+
+        // Update dark/light mode icon for all toggle buttons
+        const updateIcon = (isDark) => {
+            modeToggles.forEach(btn => {
+                btn.innerHTML = isDark ? '<i class="bi bi-sun fs-5"></i>' : '<i class="bi bi-moon fs-5"></i>';
+            });
+        };
+
+        // Check saved theme preference from localStorage on page load
+        if (localStorage.getItem('mobaTheme') === 'dark') {
+            body.classList.add('dark');
+            updateIcon(true);
+        }
+
+        // Add click event to all mode toggle buttons
+        modeToggles.forEach(toggle => {
+            toggle.addEventListener('click', () => {
+                // Toggle dark mode class on body
+                body.classList.toggle('dark');
+                const isDark = body.classList.contains('dark');
+                // Save theme preference to localStorage
+                localStorage.setItem('mobaTheme', isDark ? 'dark' : 'light');
+                // Update toggle icon
+                updateIcon(isDark);
+            });
+        });
+    </script>
+</body>
+</html>

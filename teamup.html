@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Community - Team Up</title>
+    <!-- Import Bootstrap CSS framework and icon library -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* Define global color variables for consistent styling across the project */
+        :root {
+            --primary: #1E293B;
+            --lol: #7C3AED;
+            --hok: #10B981;
+            --match: #F59E0B;
+            --dota2: #E64A19;
+            --light-bg: #F8FAFC;
+            --text-secondary: #94A3B8;
+        }
+        /* Base body styles - light mode default */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--primary);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        /* Dark mode base styles - override background and text color */
+        body.dark {
+            background-color: var(--primary);
+            color: var(--light-bg);
+        }
+        /* Navigation bar base styles */
+        .navbar {
+            background-color: var(--primary) !important;
+            padding: 0.8rem 0;
+        }
+        /* Navigation button styles (dark mode toggle, etc.) */
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: scale(0.98);
+        }
+        /* Mobile bottom navigation bar (fixed at bottom of screen) */
+        .mobile-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+            padding: 0.5rem 0;
+        }
+        /* Mobile navigation item styles */
+        .mobile-nav-item {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-bg);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .mobile-nav-item.active, .mobile-nav-item:hover {
+            color: var(--hok);
+            transform: scale(0.98);
+        }
+        /* Card component base styles with hover animation */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        /* Button base styles with hover effect */
+        .btn {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .btn:hover {
+            transform: scale(0.98);
+        }
+        /* Game-specific button color styles */
+        .btn-lol { background-color: var(--lol); color: white; }
+        .btn-hok { background-color: var(--hok); color: white; }
+        .btn-dota2 { background-color: var(--dota2); color: white; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .btn-outline { border: 1px solid var(--text-secondary); color: var(--primary); }
+        /* Dark mode adjustment for outline buttons */
+        body.dark .btn-outline { border-color: var(--text-secondary); color: var(--light-bg); }
+        /* Content wrapper to prevent overlap with mobile footer */
+        .content-wrap {
+            padding-bottom: 80px;
+        }
+        /* Desktop footer styles */
+        .footer {
+            background-color: var(--primary);
+            color: var(--text-secondary);
+            padding: 1rem 0;
+            margin-top: 2rem;
+        }
+        /* Filter tag styles for game/rank/position filtering */
+        .filter-tag {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: inline-block;
+            margin: 0 0.3rem 0.5rem 0;
+            cursor: pointer;
+            background-color: rgba(148,163,184,0.1);
+        }
+        .filter-tag.active {
+            background-color: var(--hok);
+            color: white;
+        }
+        /* User avatar placeholder styles */
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+        /* Online status indicator dot */
+        .online-tag {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #10B981;
+            display: inline-block;
+            margin-right: 0.3rem;
+        }
+        /* Form input field styles */
+        .form-control {
+            min-height: 48px;
+            border-radius: 8px;
+            border: 1px solid var(--text-secondary);
+        }
+        /* Dark mode adjustment for form inputs */
+        body.dark .form-control {
+            background-color: #2A374B;
+            border-color: #334155;
+            color: var(--light-bg);
+        }
+        /* Dark mode placeholder text color for form inputs */
+        body.dark .form-control::placeholder {
+            color: var(--text-secondary);
+        }
+        /* Responsive display control (desktop/mobile) */
+        .desktop-only { display: block; }
+        .mobile-only { display: none; }
+        /* Mobile responsive styles (<768px screen width) */
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: block; }
+            .container { padding: 0 1rem; }
+            .user-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+        }
+        /* Dark mode styles for card, footer and filter tags */
+        body.dark .card, body.dark .footer, body.dark .filter-tag {
+            background-color: #2A374B !important;
+            border-color: #334155;
+        }
+        /* Dark mode secondary text color adjustment */
+        body.dark .text-secondary {
+            color: #94A3B8 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Desktop navigation bar (visible on screens >768px) -->
+    <nav class="navbar navbar-dark desktop-only">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="index.html">MOBA Gamer Community</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="strategy.html" class="text-white text-decoration-none">Strategy</a>
+                <a href="matches.html" class="text-white text-decoration-none">Matches</a>
+                <a href="teamup.html" class="text-white text-decoration-none fw-bold">Team Up</a>
+                <div class="nav-btn text-white" id="darkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile navigation bar (top, visible on screens <768px) -->
+    <nav class="navbar navbar-dark mobile-only">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold" href="index.html">MOBA Community</a>
+            <div class="nav-btn text-white" id="mobileDarkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+        </div>
+    </nav>
+
+    <!-- Main content wrapper (prevents overlap with mobile footer) -->
+    <div class="content-wrap container mt-4">
+        <h3 class="fw-bold mb-4">Find Your MOBA Teammates</h3>
+        <p class="text-secondary mb-4">Filter by Game | Rank | Position | Find Online Players Now</p>
+
+        <!-- Team up post creation card -->
+        <div class="card p-4 mb-4">
+            <h5 class="fw-bold mb-3">Create a Team Up Post</h5>
+            <div class="row g-3">
+                <div class="col-md-4 col-sm-6">
+                    <select class="form-control">
+                        <option>Select Game</option>
+                        <option>League of Legends</option>
+                        <option>Honor of Kings</option>
+                        <option>DOTA2</option>
+                    </select>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <select class="form-control">
+                        <option>Your Rank</option>
+                        <option>Bronze</option>
+                        <option>Silver</option>
+                        <option>Gold</option>
+                        <option>Platinum</option>
+                        <option>Diamond</option>
+                        <option>Master</option>
+                    </select>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <select class="form-control">
+                        <option>Main Position</option>
+                        <option>Top</option>
+                        <option>Mid</option>
+                        <option>Jungle</option>
+                        <option>ADC/Bot</option>
+                        <option>Support</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <input type="text" class="form-control" placeholder="Team Up Note (e.g. Need a support for ranked, play at night)">
+                </div>
+                <div class="col-12">
+                    <button class="btn btn-hok w-100"><i class="bi bi-send me-2"></i>Post Team Up Request</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter section for teammates -->
+        <h5 class="fw-bold mb-3">Filter Teammates</h5>
+        <div class="mb-4">
+            <div class="mb-2">
+                <span class="fw-bold small">Game:</span>
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag" style="color: var(--lol);">LOL</span>
+                <span class="filter-tag" style="color: var(--hok);">HOK</span>
+                <span class="filter-tag" style="color: var(--dota2);">DOTA2</span>
+            </div>
+            <div class="mb-2">
+                <span class="fw-bold small">Rank:</span>
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag">Gold+</span>
+                <span class="filter-tag">Platinum+</span>
+                <span class="filter-tag">Diamond+</span>
+            </div>
+            <div>
+                <span class="fw-bold small">Position:</span>
+                <span class="filter-tag active">All</span>
+                <span class="filter-tag">Top</span>
+                <span class="filter-tag">Mid</span>
+                <span class="filter-tag">Jungle</span>
+                <span class="filter-tag">ADC</span>
+                <span class="filter-tag">Support</span>
+            </div>
+        </div>
+
+        <!-- Online players list section -->
+        <h5 class="fw-bold mb-3">Online Players Looking for Team</h5>
+        <!-- Player 1 - LOL ADC -->
+        <div class="card p-3 d-flex align-items-center">
+            <div class="user-avatar" style="background-color: var(--lol);">X</div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold m-0">XayahMain</h6>
+                <p class="text-secondary small m-0"><span class="online-tag"></span>Online now | LOL | Diamond | ADC</p>
+                <p class="small mt-1">Need a support for ranked games, play 19:00-23:00 every day</p>
+            </div>
+            <button class="btn btn-lol btn-sm ms-2"><i class="bi bi-person-add"></i></button>
+        </div>
+
+        <!-- Player 2 - HOK Jungle -->
+        <div class="card p-3 d-flex align-items-center">
+            <div class="user-avatar" style="background-color: var(--hok);">L</div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold m-0">LanJungle</h6>
+                <p class="text-secondary small m-0"><span class="online-tag"></span>Online now | HOK | King | Jungle</p>
+                <p class="small mt-1">Looking for mid and support for squad, casual games</p>
+            </div>
+            <button class="btn btn-hok btn-sm ms-2"><i class="bi bi-person-add"></i></button>
+        </div>
+
+        <!-- Player 3 - DOTA2 Mid -->
+        <div class="card p-3 d-flex align-items-center">
+            <div class="user-avatar" style="background-color: var(--dota2);">S</div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold m-0">SF_Mid</h6>
+                <p class="text-secondary small m-0"><span class="online-tag"></span>Online now | DOTA2 | Legend | Mid</p>
+                <p class="small mt-1">Need core and support for DOTA2 major practice</p>
+            </div>
+            <button class="btn btn-dota2 btn-sm ms-2"><i class="bi bi-person-add"></i></button>
+        </div>
+
+        <!-- Player 4 - LOL Mid -->
+        <div class="card p-3 d-flex align-items-center">
+            <div class="user-avatar" style="background-color: var(--lol);">Y</div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold m-0">YoneMid_</h6>
+                <p class="text-secondary small m-0"><span class="online-tag"></span>Online now | LOL | Platinum | Mid</p>
+                <p class="small mt-1">Casual games, any position is okay, just have fun</p>
+            </div>
+            <button class="btn btn-lol btn-sm ms-2"><i class="bi bi-person-add"></i></button>
+        </div>
+
+        <!-- Player 5 - HOK Support -->
+        <div class="card p-3 d-flex align-items-center">
+            <div class="user-avatar" style="background-color: var(--hok);">C</div>
+            <div class="flex-grow-1">
+                <h6 class="fw-bold m-0">CaiSupport</h6>
+                <p class="text-secondary small m-0"><span class="online-tag"></span>Online now | HOK | Diamond | Support</p>
+                <p class="small mt-1">Main soft support, find ADC and jungle for ranked</p>
+            </div>
+            <button class="btn btn-hok btn-sm ms-2"><i class="bi bi-person-add"></i></button>
+        </div>
+    </div>
+
+    <!-- Mobile bottom navigation (visible on screens <768px) -->
+    <div class="mobile-footer mobile-only">
+        <a href="index.html" class="mobile-nav-item"><i class="bi bi-house fs-5 mb-1"></i>Home</a>
+        <a href="strategy.html" class="mobile-nav-item"><i class="bi bi-book-half fs-5 mb-1"></i>Strategy</a>
+        <a href="matches.html" class="mobile-nav-item"><i class="bi bi-trophy fs-5 mb-1"></i>Matches</a>
+        <a href="teamup.html" class="mobile-nav-item active"><i class="bi bi-people fs-5 mb-1"></i>Team Up</a>
+    </div>
+
+    <!-- Desktop footer (visible on screens >768px) -->
+    <footer class="footer desktop-only text-center">
+        <p class="mb-0">© 2026 MOBA Community | Find Teammates Anytime Anywhere</p>
+    </footer>
+
+    <!-- Import Bootstrap JS bundle for interactive components -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dark Mode Functionality
+        // Get dark mode toggle button (desktop or mobile version)
+        const darkModeBtn = document.getElementById('darkModeBtn') || document.getElementById('mobileDarkModeBtn');
+        const body = document.body;
+        
+        // Check saved dark mode preference from localStorage on page load
+        if (localStorage.getItem('mobaDark') === 'dark') {
+            body.classList.add('dark');
+            darkModeBtn.innerHTML = '<i class="bi bi-sun fs-5"></i>'; // Switch to sun icon for dark mode
+        }
+        
+        // Dark mode toggle click event handler
+        darkModeBtn.addEventListener('click', () => {
+            // Toggle dark mode class on body element
+            body.classList.toggle('dark');
+            // Update button icon based on current mode
+            darkModeBtn.innerHTML = body.classList.contains('dark') ? '<i class="bi bi-sun fs-5"></i>' : '<i class="bi bi-moon fs-5"></i>';
+            // Save dark mode preference to localStorage
+            localStorage.setItem('mobaDark', body.classList.contains('dark') ? 'dark' : 'light');
+        });
+
+        // Button click animation effect (all buttons)
+        const allBtns = document.querySelectorAll('.btn');
+        allBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.style.boxShadow = '0 0 15px rgba(255,255,255,0.8)';
+                setTimeout(() => btn.style.boxShadow = 'none', 200);
+            });
+        });
+
+        // Filter tag toggle functionality (game/rank/position filters)
+        const filterTags = document.querySelectorAll('.filter-tag');
+        filterTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                // Remove active class from all sibling filter tags
+                const siblings = Array.from(tag.parentElement.children).filter(el => el.classList.contains('filter-tag'));
+                siblings.forEach(s => s.classList.remove('active'));
+                // Add active class to clicked tag
+                tag.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

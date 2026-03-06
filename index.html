@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Community - Home</title>
+    <!-- Import Bootstrap CSS and icon library -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        /* Define custom color variables for the whole project */
+        :root {
+            --primary: #1E293B;
+            --lol: #7C3AED;
+            --hok: #10B981;
+            --match: #F59E0B;
+            --light-bg: #F8FAFC;
+            --text-secondary: #94A3B8;
+        }
+        /* Base body styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--primary);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        /* Dark mode body styles */
+        body.dark {
+            background-color: var(--primary);
+            color: var(--light-bg);
+        }
+        /* Navigation bar styles */
+        .navbar {
+            background-color: var(--primary) !important;
+            padding: 0.8rem 0;
+        }
+        /* Navigation button styles */
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: scale(0.98);
+        }
+        /* Mobile bottom navigation */
+        .mobile-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+            padding: 0.5rem 0;
+        }
+        /* Mobile nav item styles */
+        .mobile-nav-item {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-bg);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .mobile-nav-item.active, .mobile-nav-item:hover {
+            color: var(--match);
+            transform: scale(0.98);
+        }
+        /* Card component styles */
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        /* Button base styles */
+        .btn {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .btn:hover {
+            transform: scale(0.98);
+        }
+        /* Game-specific button styles */
+        .btn-lol { background-color: var(--lol); color: white; }
+        .btn-hok { background-color: var(--hok); color: white; }
+        .btn-match { background-color: var(--match); color: white; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        /* Hero section styles (top banner) */
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary), #2A374B);
+            color: var(--light-bg);
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 24px 24px;
+        }
+        /* Content wrapper (prevent overlap with mobile footer) */
+        .content-wrap {
+            padding-bottom: 80px;
+        }
+        /* Footer styles (desktop) */
+        .footer {
+            background-color: var(--primary);
+            color: var(--text-secondary);
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+        /* Responsive display control */
+        .desktop-only { display: block; }
+        .mobile-only { display: none; }
+        /* Mobile responsive styles (<768px) */
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: block; }
+            .hero-section { padding: 2rem 0; }
+            .container { padding: 0 1rem; }
+        }
+        /* Dark mode adjustments for cards and footer */
+        body.dark .card, body.dark .footer {
+            background-color: #2A374B !important;
+            border-color: #334155;
+        }
+        body.dark .text-secondary {
+            color: #94A3B8 !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Desktop navigation bar -->
+    <nav class="navbar navbar-dark desktop-only">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="index.html">MOBA Gamer Community</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="strategy.html" class="text-white text-decoration-none">Strategy</a>
+                <a href="matches.html" class="text-white text-decoration-none">Matches</a>
+                <a href="teamup.html" class="text-white text-decoration-none">Team Up</a>
+                <div class="nav-btn text-white" id="searchBtn"><i class="bi bi-search fs-5"></i></div>
+                <div class="nav-btn text-white" id="darkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile navigation bar (top) -->
+    <nav class="navbar navbar-dark mobile-only">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold" href="index.html">MOBA Community</a>
+            <div class="d-flex gap-2">
+                <div class="nav-btn text-white" id="mobileSearchBtn"><i class="bi bi-search fs-5"></i></div>
+                <div class="nav-btn text-white" id="mobileDarkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content wrapper -->
+    <div class="content-wrap">
+        <!-- Hero section (top banner) -->
+        <section class="hero-section">
+            <div class="container text-center">
+                <h1 class="fw-bold mb-3">MOBA Gamers' Exclusive Community</h1>
+                <p class="text-secondary mb-4">LOL | Honor of Kings | DOTA2 | Strategy & Matches & Team Up</p>
+                <div class="d-flex flex-wrap justify-content-center gap-3">
+                    <a href="strategy.html" class="btn btn-lol col-sm-3 col-5"><i class="bi bi-book-half me-2"></i>Game Strategy</a>
+                    <a href="matches.html" class="btn btn-match col-sm-3 col-5"><i class="bi bi-trophy me-2"></i>Match Info</a>
+                    <a href="teamup.html" class="btn btn-hok col-sm-3 col-11 mt-2"><i class="bi bi-people me-2"></i>Find Teammates</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main content section -->
+        <section class="container">
+            <!-- Feature cards row -->
+            <div class="row g-4">
+                <div class="col-md-4 col-sm-6">
+                    <div class="card p-4 h-100">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-lightning-charge fs-1" style="color: var(--lol);"></i>
+                        </div>
+                        <h3 class="h5 text-center fw-bold mb-3">Version Strategy</h3>
+                        <p class="text-secondary small mb-3">Real-time version updates, champion builds, runes and inscriptions for all MOBAs</p>
+                        <a href="strategy.html" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    <div class="card p-4 h-100">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-tv-fill fs-1" style="color: var(--match);"></i>
+                        </div>
+                        <h3 class="h5 text-center fw-bold mb-3">Match News</h3>
+                        <p class="text-secondary small mb-3">LPL/KPL/DOTA2 Matches, schedules, reports and professional analysis</p>
+                        <a href="matches.html" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-12">
+                    <div class="card p-4 h-100">
+                        <div class="text-center mb-3">
+                            <i class="bi bi-headphones-verified fs-1" style="color: var(--hok);"></i>
+                        </div>
+                        <h3 class="h5 text-center fw-bold mb-3">Team Building</h3>
+                        <p class="text-secondary small mb-3">Find teammates by game, rank and position. Real-time online matching</p>
+                        <a href="teamup.html" class="btn btn-primary w-100">View Details</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular game zones section -->
+            <h3 class="fw-bold mt-5 mb-4">Popular Game Zones</h3>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="card p-3 h-100" style="background-color: rgba(124,58,237,0.1);">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="w-10 h-10 rounded-circle" style="background-color: var(--lol);"></div>
+                            <h4 class="h6 fw-bold ms-2">League of Legends</h4>
+                        </div>
+                        <p class="text-secondary small">Latest Ver:14.8 | Strong Champs:Xayah, Yone, Blitzcrank</p>
+                        <a href="strategy.html#lol" class="text-decoration-none fw-500" style="color: var(--lol);">Enter Zone <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 h-100" style="background-color: rgba(16,185,129,0.1);">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="w-10 h-10 rounded-circle" style="background-color: var(--hok);"></div>
+                            <h4 class="h6 fw-bold ms-2">Honor of Kings</h4>
+                        </div>
+                        <p class="text-secondary small">Latest Ver:S36 | Strong Champs:Lan, Daji, Cai Wenji</p>
+                        <a href="strategy.html#hok" class="text-decoration-none fw-500" style="color: var(--hok);">Enter Zone <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-3 h-100" style="background-color: rgba(245,158,11,0.1);">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="w-10 h-10 rounded-circle" style="background-color: var(--match);"></div>
+                            <h4 class="h6 fw-bold ms-2">DOTA2</h4>
+                        </div>
+                        <p class="text-secondary small">Latest Ver:7.36 | Strong Champs:Shadow Fiend, Puck, Tidehunter</p>
+                        <a href="strategy.html#dota2" class="text-decoration-none fw-500" style="color: var(--match);">Enter Zone <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Mobile bottom navigation -->
+    <div class="mobile-footer mobile-only">
+        <a href="index.html" class="mobile-nav-item active"><i class="bi bi-house fs-5 mb-1"></i>Home</a>
+        <a href="strategy.html" class="mobile-nav-item"><i class="bi bi-book-half fs-5 mb-1"></i>Strategy</a>
+        <a href="matches.html" class="mobile-nav-item"><i class="bi bi-trophy fs-5 mb-1"></i>Matches</a>
+        <a href="teamup.html" class="mobile-nav-item"><i class="bi bi-people fs-5 mb-1"></i>Team Up</a>
+    </div>
+
+    <!-- Desktop footer -->
+    <footer class="footer desktop-only">
+        <div class="container text-center text-sm-start">
+            <p class="mb-0">© 2026 MOBA Gamer Community | BIT 102 ASSIGNMENT1</p>
+        </div>
+    </footer>
+
+    <!-- Import Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get dark mode button (desktop or mobile)
+        const darkModeBtn = document.getElementById('darkModeBtn') || document.getElementById('mobileDarkModeBtn');
+        const body = document.body;
+        
+        // Check saved dark mode preference
+        if (localStorage.getItem('mobaDark') === 'dark') {
+            body.classList.add('dark');
+            darkModeBtn.innerHTML = '<i class="bi bi-sun fs-5"></i>';
+        }
+        
+        // Dark mode toggle functionality
+        darkModeBtn.addEventListener('click', () => {
+            body.classList.toggle('dark');
+            if (body.classList.contains('dark')) {
+                darkModeBtn.innerHTML = '<i class="bi bi-sun fs-5"></i>';
+                localStorage.setItem('mobaDark', 'dark');
+            } else {
+                darkModeBtn.innerHTML = '<i class="bi bi-moon fs-5"></i>';
+                localStorage.setItem('mobaDark', 'light');
+            }
+        });
+        
+        // Add click effect to all buttons
+        const allBtns = document.querySelectorAll('.btn');
+        allBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.style.boxShadow = '0 0 15px rgba(255,255,255,0.8)';
+                setTimeout(() => {
+                    btn.style.boxShadow = 'none';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

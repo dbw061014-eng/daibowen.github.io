@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MOBA Community - Game Strategy</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        :root {
+            --primary: #1E293B;
+            --lol: #7C3AED;
+            --hok: #10B981;
+            --dota2: #E64A19;
+            --light-bg: #F8FAFC;
+            --text-secondary: #94A3B8;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--primary);
+            transition: all 0.3s ease;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+        /* Dark mode base styles - override body background and text color */
+        body.dark {
+            background-color: var(--primary);
+            color: var(--light-bg);
+        }
+        .navbar {
+            background-color: var(--primary) !important;
+            padding: 0.8rem 0;
+        }
+        .nav-btn {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.1);
+            transform: scale(0.98);
+        }
+        .mobile-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background-color: var(--primary);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 999;
+            padding: 0.5rem 0;
+        }
+        .mobile-nav-item {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--light-bg);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+        .mobile-nav-item.active, .mobile-nav-item:hover {
+            color: var(--lol);
+            transform: scale(0.98);
+        }
+        .card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            margin-bottom: 1.5rem;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .btn {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+        }
+        .btn:hover {
+            transform: scale(0.98);
+        }
+        .btn-lol { background-color: var(--lol); color: white; }
+        .btn-hok { background-color: var(--hok); color: white; }
+        .btn-dota2 { background-color: var(--dota2); color: white; }
+        .btn-primary { background-color: var(--primary); color: white; }
+        .content-wrap {
+            padding-bottom: 80px;
+        }
+        .footer {
+            background-color: var(--primary);
+            color: var(--text-secondary);
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+        }
+        .nav-pills {
+            --bs-nav-pills-border-radius: 8px;
+            --bs-nav-pills-link-active-bg: var(--lol);
+        }
+        .nav-pills .nav-link {
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-weight: 500;
+        }
+        .strategy-card .icon-box {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            background-color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.2rem;
+            flex-shrink: 0;
+        }
+        /* Dark mode adjustment for strategy card icon box */
+        body.dark .strategy-card .icon-box {
+            background-color: #334155;
+        }
+        .desktop-only { display: block; }
+        .mobile-only { display: none; }
+        @media (max-width: 768px) {
+            .desktop-only { display: none; }
+            .mobile-only { display: block; }
+            .container { padding: 0 1rem; }
+        }
+        /* Dark mode styles for card, footer and nav pills */
+        body.dark .card, body.dark .footer, body.dark .nav-pills {
+            background-color: #2A374B !important;
+            border-color: #334155;
+        }
+        /* Dark mode secondary text color adjustment */
+        body.dark .text-secondary {
+            color: #94A3B8 !important;
+        }
+        /* Dark mode nav pills link color */
+        body.dark .nav-pills .nav-link {
+            color: var(--light-bg);
+        }
+        /* Dark mode active nav pill background color */
+        body.dark .nav-pills .nav-link.active {
+            background-color: var(--lol) !important;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-dark desktop-only">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="index.html">MOBA Gamer Community</a>
+            <div class="d-flex align-items-center gap-3">
+                <a href="strategy.html" class="text-white text-decoration-none fw-bold">Strategy</a>
+                <a href="matches.html" class="text-white text-decoration-none">Matches</a>
+                <a href="teamup.html" class="text-white text-decoration-none">Team Up</a>
+                <div class="nav-btn text-white" id="searchBtn"><i class="bi bi-search fs-5"></i></div>
+                <div class="nav-btn text-white" id="darkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-dark mobile-only">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a class="navbar-brand fw-bold" href="index.html">MOBA Community</a>
+            <div class="d-flex gap-2">
+                <div class="nav-btn text-white" id="mobileSearchBtn"><i class="bi bi-search fs-5"></i></div>
+                <div class="nav-btn text-white" id="mobileDarkModeBtn"><i class="bi bi-moon fs-5"></i></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap container mt-4">
+        <h3 class="fw-bold mb-4">MOBA Game Strategy Library</h3>
+        <p class="text-secondary mb-4">By Game | Rank | Position | Beginner & Advanced Guides</p>
+
+        <ul class="nav nav-pills mb-4" id="gameTab" role="tablist">
+            <li class="nav-item flex-fill" role="presentation">
+                <button class="nav-link w-100 active" id="lol-tab" data-bs-toggle="pill" data-bs-target="#lol" type="button" role="tab">League of Legends</button>
+            </li>
+            <li class="nav-item flex-fill" role="presentation">
+                <button class="nav-link w-100" id="hok-tab" data-bs-toggle="pill" data-bs-target="#hok" type="button" role="tab">Honor of Kings</button>
+            </li>
+            <li class="nav-item flex-fill" role="presentation">
+                <button class="nav-link w-100" id="dota2-tab" data-bs-toggle="pill" data-bs-target="#dota2" type="button" role="tab">DOTA2</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="gameTabContent">
+            <div class="tab-pane fade show active" id="lol" role="tabpanel">
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <button class="btn btn-sm btn-outline-primary">All Ranks</button>
+                    <button class="btn btn-sm btn-primary">Diamond+</button>
+                    <button class="btn btn-sm btn-outline-primary">Beginner</button>
+                    <button class="btn btn-sm btn-outline-primary">Top</button>
+                    <button class="btn btn-sm btn-outline-primary">Mid</button>
+                    <button class="btn btn-sm btn-outline-primary">Jungle</button>
+                    <button class="btn btn-sm btn-outline-primary">ADC</button>
+                </div>
+                
+                <div class="strategy-card card p-3 d-flex flex-row align-items-center">
+                    <div class="icon-box"><i class="bi bi-shield-shaded fs-3"></i></div>
+                    <div class="flex-grow-1">
+                        <h5 class="h6 fw-bold mb-1">Xayah - Best Build & Runes (Ver 14.8)</h5>
+                        <p class="text-secondary small mb-1">ADC | Diamond+ | Advanced Guide</p>
+                        <div class="d-flex align-items-center gap-3 small">
+                            <span><i class="bi bi-star text-warning"></i> 4.9</span>
+                            <span class="fw-bold" style="color: var(--lol);">LOL</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-lol"><i class="bi bi-heart"></i></button>
+                </div>
+
+                <div class="strategy-card card p-3 d-flex flex-row align-items-center">
+                    <div class="icon-box"><i class="bi bi-lightning-charge fs-3"></i></div>
+                    <div class="flex-grow-1">
+                        <h5 class="h6 fw-bold mb-1">Yone - Mid Lane Combos & Lane Tips</h5>
+                        <p class="text-secondary small mb-1">Mid | All Ranks | General Guide</p>
+                        <div class="d-flex align-items-center gap-3 small">
+                            <span><i class="bi bi-star text-warning"></i> 4.8</span>
+                            <span class="fw-bold" style="color: var(--lol);">LOL</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-lol"><i class="bi bi-heart"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="hok" role="tabpanel">
+                <div class="strategy-card card p-3 d-flex flex-row align-items-center">
+                    <div class="icon-box"><i class="bi bi-sword fs-3"></i></div>
+                    <div class="flex-grow-1">
+                        <h5 class="h6 fw-bold mb-1">Lan - Jungle Build & Combos (Ver S36)</h5>
+                        <p class="text-secondary small mb-1">Jungle | King+ | Advanced Guide</p>
+                        <div class="d-flex align-items-center gap-3 small">
+                            <span><i class="bi bi-star text-warning"></i> 4.9</span>
+                            <span class="fw-bold" style="color: var(--hok);">HOK</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-hok"><i class="bi bi-heart"></i></button>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="dota2" role="tabpanel">
+                <div class="strategy-card card p-3 d-flex flex-row align-items-center">
+                    <div class="icon-box"><i class="bi bi-fire fs-3"></i></div>
+                    <div class="flex-grow-1">
+                        <h5 class="h6 fw-bold mb-1">Shadow Fiend - Mid Build (Ver 7.36)</h5>
+                        <p class="text-secondary small mb-1">Core | Legend+ | Advanced Guide</p>
+                        <div class="d-flex align-items-center gap-3 small">
+                            <span><i class="bi bi-star text-warning"></i> 4.8</span>
+                            <span class="fw-bold" style="color: var(--dota2);">DOTA2</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-sm btn-dota2"><i class="bi bi-heart"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-4 mt-5">
+            <h4 class="h5 fw-bold mb-3">MOBA Useful Tools</h4>
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                    <button class="btn btn-primary w-100"><i class="bi bi-bar-chart me-2"></i>Win Rate</button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button class="btn btn-primary w-100"><i class="bi bi-calculator me-2"></i>Calculator</button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button class="btn btn-primary w-100"><i class="bi bi-speedometer me-2"></i>Power Analysis</button>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <button class="btn btn-primary w-100"><i class="bi bi-lightning me-2"></i>Combo Guide</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-footer mobile-only">
+        <a href="index.html" class="mobile-nav-item"><i class="bi bi-house fs-5 mb-1"></i>Home</a>
+        <a href="strategy.html" class="mobile-nav-item active"><i class="bi bi-book-half fs-5 mb-1"></i>Strategy</a>
+        <a href="matches.html" class="mobile-nav-item"><i class="bi bi-trophy fs-5 mb-1"></i>Matches</a>
+        <a href="teamup.html" class="mobile-nav-item"><i class="bi bi-people fs-5 mb-1"></i>Team Up</a>
+    </div>
+
+    <footer class="footer desktop-only">
+        <div class="container text-center text-sm-start">
+            <p class="mb-0">© 2026 MOBA Gamer Community | Strategy Updated In Real Time</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Get dark mode toggle button (desktop or mobile version)
+        const darkModeBtn = document.getElementById('darkModeBtn') || document.getElementById('mobileDarkModeBtn');
+        const body = document.body;
+        
+        // Check saved dark mode preference from localStorage on page load
+        if (localStorage.getItem('mobaDark') === 'dark') {
+            body.classList.add('dark');
+            darkModeBtn.innerHTML = '<i class="bi bi-sun fs-5"></i>'; // Change icon to sun for dark mode
+        }
+        
+        // Dark mode toggle click event handler
+        darkModeBtn.addEventListener('click', () => {
+            // Toggle dark mode class on body element
+            body.classList.toggle('dark');
+            // Update button icon and save preference to localStorage
+            darkModeBtn.innerHTML = body.classList.contains('dark') ? '<i class="bi bi-sun fs-5"></i>' : '<i class="bi bi-moon fs-5"></i>';
+            localStorage.setItem('mobaDark', body.classList.contains('dark') ? 'dark' : 'light');
+        });
+        
+        // Like button toggle functionality (unrelated to dark mode, kept as original)
+        const likeBtns = document.querySelectorAll('.btn-lol, .btn-hok, .btn-dota2');
+        likeBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.innerHTML = btn.innerHTML.includes('bi-heart-fill') ? '<i class="bi bi-heart"></i>' : '<i class="bi bi-heart-fill"></i>';
+            });
+        });
+    </script>
+</body>
+</html>
